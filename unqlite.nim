@@ -302,7 +302,7 @@ type
   unqlite_kv_cursor* {.pure, final, importc, header: "../private/unqlite.h".} = object
   unqlite_context* {.pure, final, importc, header: "../private/unqlite.h".} = object
 
-proc unqlite_open*(ppDB: ptr ptr unqlite; zFilename: cstring; iMode: cuint): cint {.
+proc unqlite_open*(ppDB: ptr ptr unqlite; zFilename: string; iMode: uint): int {.
     importc: "unqlite_open", header: "../private/unqlite.h".}
 proc unqlite_config*(pDb: ptr unqlite; nOp: cint): cint {.varargs,
     importc: "unqlite_config", header: "../private/unqlite.h".}
@@ -310,115 +310,115 @@ proc unqlite_close*(pDb: ptr unqlite): cint {.importc: "unqlite_close",
     header: "../private/unqlite.h".}
 ## # Key/Value (KV) Store Interfaces
 
-proc unqlite_kv_store*(pDb: ptr unqlite; pKey: string; nKeyLen: cint; pData: string;
-                      nDataLen: int64): cint {.importc: "unqlite_kv_store",
+proc unqlite_kv_store*(pDb: ptr unqlite; pKey: string; nKeyLen: cint; pData: auto;
+                      nDataLen: int): cint {.importc: "unqlite_kv_store",
     header: "../private/unqlite.h".}
-proc unqlite_kv_append*(pDb: ptr unqlite; pKey: pointer; nKeyLen: cint; pData: pointer;
-                       nDataLen: int64): cint {.
+proc unqlite_kv_append*(pDb: ptr unqlite; pKey: string; nKeyLen: cint; pData: auto;
+                       nDataLen: int): cint {.
     importc: "unqlite_kv_append", header: "../private/unqlite.h".}
 proc unqlite_kv_store_fmt*(pDb: ptr unqlite; pKey: pointer; nKeyLen: cint;
-                          zFormat: cstring): cint {.varargs,
+                          zFormat: string): cint {.varargs,
     importc: "unqlite_kv_store_fmt", header: "../private/unqlite.h".}
 proc unqlite_kv_append_fmt*(pDb: ptr unqlite; pKey: pointer; nKeyLen: cint;
-                           zFormat: cstring): cint {.varargs,
+                           zFormat: string): cint {.varargs,
     importc: "unqlite_kv_append_fmt", header: "../private/unqlite.h".}
-proc unqlite_kv_fetch*(pDb: ptr unqlite; pKey: pointer; nKeyLen: cint; pBuf: pointer;
-    pBufLen: ptr int64): cint {.importc: "unqlite_kv_fetch",
+proc unqlite_kv_fetch*(pDb: ptr unqlite; pKey: string; nKeyLen: int; pBuf: auto;
+    pBufLen: ptr int): int {.importc: "unqlite_kv_fetch",
                                     header: "../private/unqlite.h".}
   ## # in|out
-proc unqlite_kv_fetch_callback*(pDb: ptr unqlite; pKey: pointer; nKeyLen: cint;
-    xConsumer: proc (a2: pointer; a3: cuint; a4: pointer): cint; pUserData: pointer): cint {.
+proc unqlite_kv_fetch_callback*(pDb: ptr unqlite; pKey: pointer; nKeyLen: int;
+    xConsumer: proc (a2: pointer; a3: uint; a4: pointer): int; pUserData: pointer): int {.
     importc: "unqlite_kv_fetch_callback", header: "../private/unqlite.h".}
-proc unqlite_kv_delete*(pDb: ptr unqlite; pKey: pointer; nKeyLen: cint): cint {.
+proc unqlite_kv_delete*(pDb: ptr unqlite; pKey: string; nKeyLen: int): int {.
     importc: "unqlite_kv_delete", header: "../private/unqlite.h".}
-proc unqlite_kv_config*(pDb: ptr unqlite; iOp: cint): cint {.varargs,
+proc unqlite_kv_config*(pDb: ptr unqlite; iOp: int): int {.varargs,
     importc: "unqlite_kv_config", header: "../private/unqlite.h".}
 ## # Document (JSON) Store Interfaces powered by the Jx9 Scripting Language
 
-proc unqlite_compile*(pDb: ptr unqlite; zJx9: cstring; nByte: cint;
-                     ppOut: ptr ptr unqlite_vm): cint {.importc: "unqlite_compile",
+proc unqlite_compile*(pDb: ptr unqlite; zJx9: string; nByte: int;
+                     ppOut: ptr ptr unqlite_vm): int {.importc: "unqlite_compile",
     header: "../private/unqlite.h".}
-proc unqlite_compile_file*(pDb: ptr unqlite; zPath: cstring; ppOut: ptr ptr unqlite_vm): cint {.
+proc unqlite_compile_file*(pDb: ptr unqlite; zPath: string; ppOut: ptr ptr unqlite_vm): int {.
     importc: "unqlite_compile_file", header: "../private/unqlite.h".}
-proc unqlite_vm_config*(pVm: ptr unqlite_vm; iOp: cint): cint {.varargs,
+proc unqlite_vm_config*(pVm: ptr unqlite_vm; iOp: int): int {.varargs,
     importc: "unqlite_vm_config", header: "../private/unqlite.h".}
-proc unqlite_vm_exec*(pVm: ptr unqlite_vm): cint {.importc: "unqlite_vm_exec",
+proc unqlite_vm_exec*(pVm: ptr unqlite_vm): int {.importc: "unqlite_vm_exec",
     header: "../private/unqlite.h".}
-proc unqlite_vm_reset*(pVm: ptr unqlite_vm): cint {.importc: "unqlite_vm_reset",
+proc unqlite_vm_reset*(pVm: ptr unqlite_vm): int {.importc: "unqlite_vm_reset",
     header: "../private/unqlite.h".}
-proc unqlite_vm_release*(pVm: ptr unqlite_vm): cint {.importc: "unqlite_vm_release",
+proc unqlite_vm_release*(pVm: ptr unqlite_vm): int {.importc: "unqlite_vm_release",
     header: "../private/unqlite.h".}
-proc unqlite_vm_dump*(pVm: ptr unqlite_vm; xConsumer: proc (a2: pointer; a3: cuint;
-    a4: pointer): cint; pUserData: pointer): cint {.importc: "unqlite_vm_dump",
+proc unqlite_vm_dump*(pVm: ptr unqlite_vm; xConsumer: proc (a2: pointer; a3: uint;
+    a4: pointer): int; pUserData: pointer): int {.importc: "unqlite_vm_dump",
     header: "../private/unqlite.h".}
-proc unqlite_vm_extract_variable*(pVm: ptr unqlite_vm; zVarname: cstring): ptr unqlite_value {.
+proc unqlite_vm_extract_variable*(pVm: ptr unqlite_vm; zVarname: string): ptr unqlite_value {.
     importc: "unqlite_vm_extract_variable", header: "../private/unqlite.h".}
 ## #  Cursor Iterator Interfaces
 
-proc unqlite_kv_cursor_init*(pDb: ptr unqlite; ppOut: ptr ptr unqlite_kv_cursor): cint {.
+proc unqlite_kv_cursor_init*(pDb: ptr unqlite; ppOut: ptr ptr unqlite_kv_cursor): int {.
     importc: "unqlite_kv_cursor_init", header: "../private/unqlite.h".}
-proc unqlite_kv_cursor_release*(pDb: ptr unqlite; pCur: ptr unqlite_kv_cursor): cint {.
+proc unqlite_kv_cursor_release*(pDb: ptr unqlite; pCur: ptr unqlite_kv_cursor): int {.
     importc: "unqlite_kv_cursor_release", header: "../private/unqlite.h".}
 proc unqlite_kv_cursor_seek*(pCursor: ptr unqlite_kv_cursor; pKey: pointer;
-                            nKeyLen: cint; iPos: cint): cint {.
+                            nKeyLen: int; iPos: int): int {.
     importc: "unqlite_kv_cursor_seek", header: "../private/unqlite.h".}
-proc unqlite_kv_cursor_first_entry*(pCursor: ptr unqlite_kv_cursor): cint {.
+proc unqlite_kv_cursor_first_entry*(pCursor: ptr unqlite_kv_cursor): int {.
     importc: "unqlite_kv_cursor_first_entry", header: "../private/unqlite.h".}
-proc unqlite_kv_cursor_last_entry*(pCursor: ptr unqlite_kv_cursor): cint {.
+proc unqlite_kv_cursor_last_entry*(pCursor: ptr unqlite_kv_cursor): int {.
     importc: "unqlite_kv_cursor_last_entry", header: "../private/unqlite.h".}
-proc unqlite_kv_cursor_valid_entry*(pCursor: ptr unqlite_kv_cursor): cint {.
+proc unqlite_kv_cursor_valid_entry*(pCursor: ptr unqlite_kv_cursor): int {.
     importc: "unqlite_kv_cursor_valid_entry", header: "../private/unqlite.h".}
-proc unqlite_kv_cursor_next_entry*(pCursor: ptr unqlite_kv_cursor): cint {.
+proc unqlite_kv_cursor_next_entry*(pCursor: ptr unqlite_kv_cursor): int {.
     importc: "unqlite_kv_cursor_next_entry", header: "../private/unqlite.h".}
-proc unqlite_kv_cursor_prev_entry*(pCursor: ptr unqlite_kv_cursor): cint {.
+proc unqlite_kv_cursor_prev_entry*(pCursor: ptr unqlite_kv_cursor): int {.
     importc: "unqlite_kv_cursor_prev_entry", header: "../private/unqlite.h".}
 proc unqlite_kv_cursor_key*(pCursor: ptr unqlite_kv_cursor; pBuf: pointer;
-                           pnByte: ptr cint): cint {.
+                           pnByte: ptr int): int {.
     importc: "unqlite_kv_cursor_key", header: "../private/unqlite.h".}
 proc unqlite_kv_cursor_key_callback*(pCursor: ptr unqlite_kv_cursor; xConsumer: proc (
-    a2: pointer; a3: cuint; a4: pointer): cint; pUserData: pointer): cint {.
+    a2: pointer; a3: uint; a4: pointer): int; pUserData: pointer): int {.
     importc: "unqlite_kv_cursor_key_callback", header: "../private/unqlite.h".}
 proc unqlite_kv_cursor_data*(pCursor: ptr unqlite_kv_cursor; pBuf: pointer;
-                            pnData: ptr int64): cint {.
+                            pnData: ptr int): int {.
     importc: "unqlite_kv_cursor_data", header: "../private/unqlite.h".}
 proc unqlite_kv_cursor_data_callback*(pCursor: ptr unqlite_kv_cursor; xConsumer: proc (
-    a2: pointer; a3: cuint; a4: pointer): cint; pUserData: pointer): cint {.
+    a2: pointer; a3: uint; a4: pointer): int; pUserData: pointer): int {.
     importc: "unqlite_kv_cursor_data_callback", header: "../private/unqlite.h".}
-proc unqlite_kv_cursor_delete_entry*(pCursor: ptr unqlite_kv_cursor): cint {.
+proc unqlite_kv_cursor_delete_entry*(pCursor: ptr unqlite_kv_cursor): int {.
     importc: "unqlite_kv_cursor_delete_entry", header: "../private/unqlite.h".}
-proc unqlite_kv_cursor_reset*(pCursor: ptr unqlite_kv_cursor): cint {.
+proc unqlite_kv_cursor_reset*(pCursor: ptr unqlite_kv_cursor): int {.
     importc: "unqlite_kv_cursor_reset", header: "../private/unqlite.h".}
 ## # Manual Transaction Manager
 
-proc unqlite_begin*(pDb: ptr unqlite): cint {.importc: "unqlite_begin",
+proc unqlite_begin*(pDb: ptr unqlite): int {.importc: "unqlite_begin",
     header: "../private/unqlite.h".}
-proc unqlite_commit*(pDb: ptr unqlite): cint {.importc: "unqlite_commit",
+proc unqlite_commit*(pDb: ptr unqlite): int {.importc: "unqlite_commit",
     header: "../private/unqlite.h".}
-proc unqlite_rollback*(pDb: ptr unqlite): cint {.importc: "unqlite_rollback",
+proc unqlite_rollback*(pDb: ptr unqlite): int {.importc: "unqlite_rollback",
     header: "../private/unqlite.h".}
 ## # Utility interfaces
 
-proc unqlite_util_load_mmaped_file*(zFile: cstring; ppMap: ptr pointer;
-                                   pFileSize: ptr int64): cint {.
+proc unqlite_util_load_mmaped_file*(zFile: string; ppMap: ptr pointer;
+                                   pFileSize: ptr int): int {.
     importc: "unqlite_util_load_mmaped_file", header: "../private/unqlite.h".}
-proc unqlite_util_release_mmaped_file*(pMap: pointer; iFileSize: int64): cint {.
+proc unqlite_util_release_mmaped_file*(pMap: pointer; iFileSize: int): int {.
     importc: "unqlite_util_release_mmaped_file", header: "../private/unqlite.h".}
-proc unqlite_util_random_string*(pDb: ptr unqlite; zBuf: cstring; buf_size: cuint): cint {.
+proc unqlite_util_random_string*(pDb: ptr unqlite; zBuf: string; buf_size: uint): int {.
     importc: "unqlite_util_random_string", header: "../private/unqlite.h".}
-proc unqlite_util_random_num*(pDb: ptr unqlite): cuint {.
+proc unqlite_util_random_num*(pDb: ptr unqlite): uint {.
     importc: "unqlite_util_random_num", header: "../private/unqlite.h".}
 ## # In-process extending interfaces
 
-proc unqlite_create_function*(pVm: ptr unqlite_vm; zName: cstring; xFunc: proc (
-    a2: ptr unqlite_context; a3: cint; a4: ptr ptr unqlite_value): cint;
-                             pUserData: pointer): cint {.
+proc unqlite_create_function*(pVm: ptr unqlite_vm; zName: string; xFunc: proc (
+    a2: ptr unqlite_context; a3: int; a4: ptr ptr unqlite_value): int;
+                             pUserData: pointer): int {.
     importc: "unqlite_create_function", header: "../private/unqlite.h".}
-proc unqlite_delete_function*(pVm: ptr unqlite_vm; zName: cstring): cint {.
+proc unqlite_delete_function*(pVm: ptr unqlite_vm; zName: string): int {.
     importc: "unqlite_delete_function", header: "../private/unqlite.h".}
-proc unqlite_create_constant*(pVm: ptr unqlite_vm; zName: cstring; xExpand: proc (
-    a2: ptr unqlite_value; a3: pointer); pUserData: pointer): cint {.
+proc unqlite_create_constant*(pVm: ptr unqlite_vm; zName: string; xExpand: proc (
+    a2: ptr unqlite_value; a3: pointer); pUserData: pointer): int {.
     importc: "unqlite_create_constant", header: "../private/unqlite.h".}
-proc unqlite_delete_constant*(pVm: ptr unqlite_vm; zName: cstring): cint {.
+proc unqlite_delete_constant*(pVm: ptr unqlite_vm; zName: string): int {.
     importc: "unqlite_delete_constant", header: "../private/unqlite.h".}
 ## # On Demand Object allocation interfaces
 
@@ -426,7 +426,7 @@ proc unqlite_vm_new_scalar*(pVm: ptr unqlite_vm): ptr unqlite_value {.
     importc: "unqlite_vm_new_scalar", header: "../private/unqlite.h".}
 proc unqlite_vm_new_array*(pVm: ptr unqlite_vm): ptr unqlite_value {.
     importc: "unqlite_vm_new_array", header: "../private/unqlite.h".}
-proc unqlite_vm_release_value*(pVm: ptr unqlite_vm; pValue: ptr unqlite_value): cint {.
+proc unqlite_vm_release_value*(pVm: ptr unqlite_vm; pValue: ptr unqlite_value): int {.
     importc: "unqlite_vm_release_value", header: "../private/unqlite.h".}
 proc unqlite_context_new_scalar*(pCtx: ptr unqlite_context): ptr unqlite_value {.
     importc: "unqlite_context_new_scalar", header: "../private/unqlite.h".}
@@ -437,174 +437,174 @@ proc unqlite_context_release_value*(pCtx: ptr unqlite_context;
     importc: "unqlite_context_release_value", header: "../private/unqlite.h".}
 ## # Dynamically Typed Value Object Management Interfaces
 
-proc unqlite_value_int*(pVal: ptr unqlite_value; iValue: cint): cint {.
+proc unqlite_value_int*(pVal: ptr unqlite_value; iValue: int): int {.
     importc: "unqlite_value_int", header: "../private/unqlite.h".}
-proc unqlite_value_int64*(pVal: ptr unqlite_value; iValue: int64): cint {.
+proc unqlite_value_int64*(pVal: ptr unqlite_value; iValue: int): int {.
     importc: "unqlite_value_int64", header: "../private/unqlite.h".}
-proc unqlite_value_bool*(pVal: ptr unqlite_value; iBool: cint): cint {.
+proc unqlite_value_bool*(pVal: ptr unqlite_value; iBool: int): int {.
     importc: "unqlite_value_bool", header: "../private/unqlite.h".}
-proc unqlite_value_null*(pVal: ptr unqlite_value): cint {.
+proc unqlite_value_null*(pVal: ptr unqlite_value): int {.
     importc: "unqlite_value_null", header: "../private/unqlite.h".}
-proc unqlite_value_double*(pVal: ptr unqlite_value; Value: cdouble): cint {.
+proc unqlite_value_double*(pVal: ptr unqlite_value; Value: cdouble): int {.
     importc: "unqlite_value_double", header: "../private/unqlite.h".}
-proc unqlite_value_string*(pVal: ptr unqlite_value; zString: cstring; nLen: cint): cint {.
+proc unqlite_value_string*(pVal: ptr unqlite_value; zString: string; nLen: int): int {.
     importc: "unqlite_value_string", header: "../private/unqlite.h".}
-proc unqlite_value_string_format*(pVal: ptr unqlite_value; zFormat: cstring): cint {.
+proc unqlite_value_string_format*(pVal: ptr unqlite_value; zFormat: string): int {.
     varargs, importc: "unqlite_value_string_format", header: "../private/unqlite.h".}
-proc unqlite_value_reset_string_cursor*(pVal: ptr unqlite_value): cint {.
+proc unqlite_value_reset_string_cursor*(pVal: ptr unqlite_value): int {.
     importc: "unqlite_value_reset_string_cursor", header: "../private/unqlite.h".}
-proc unqlite_value_resource*(pVal: ptr unqlite_value; pUserData: pointer): cint {.
+proc unqlite_value_resource*(pVal: ptr unqlite_value; pUserData: pointer): int {.
     importc: "unqlite_value_resource", header: "../private/unqlite.h".}
-proc unqlite_value_release*(pVal: ptr unqlite_value): cint {.
+proc unqlite_value_release*(pVal: ptr unqlite_value): int {.
     importc: "unqlite_value_release", header: "../private/unqlite.h".}
 ## # Foreign Function Parameter Values
 
-proc unqlite_value_to_int*(pValue: ptr unqlite_value): cint {.
+proc unqlite_value_to_int*(pValue: ptr unqlite_value): int {.
     importc: "unqlite_value_to_int", header: "../private/unqlite.h".}
-proc unqlite_value_to_bool*(pValue: ptr unqlite_value): cint {.
+proc unqlite_value_to_bool*(pValue: ptr unqlite_value): int {.
     importc: "unqlite_value_to_bool", header: "../private/unqlite.h".}
-proc unqlite_value_to_int64*(pValue: ptr unqlite_value): int64 {.
+proc unqlite_value_to_int64*(pValue: ptr unqlite_value): int {.
     importc: "unqlite_value_to_int64", header: "../private/unqlite.h".}
 proc unqlite_value_to_double*(pValue: ptr unqlite_value): cdouble {.
     importc: "unqlite_value_to_double", header: "../private/unqlite.h".}
-proc unqlite_value_to_string*(pValue: ptr unqlite_value; pLen: ptr cint): cstring {.
+proc unqlite_value_to_string*(pValue: ptr unqlite_value; pLen: ptr int): string {.
     importc: "unqlite_value_to_string", header: "../private/unqlite.h".}
 proc unqlite_value_to_resource*(pValue: ptr unqlite_value): pointer {.
     importc: "unqlite_value_to_resource", header: "../private/unqlite.h".}
 proc unqlite_value_compare*(pLeft: ptr unqlite_value; pRight: ptr unqlite_value;
-                           bStrict: cint): cint {.importc: "unqlite_value_compare",
+                           bStrict: int): int {.importc: "unqlite_value_compare",
     header: "../private/unqlite.h".}
 ## # Setting The Result Of A Foreign Function
 
-proc unqlite_result_int*(pCtx: ptr unqlite_context; iValue: cint): cint {.
+proc unqlite_result_int*(pCtx: ptr unqlite_context; iValue: int): int {.
     importc: "unqlite_result_int", header: "../private/unqlite.h".}
-proc unqlite_result_int64*(pCtx: ptr unqlite_context; iValue: int64): cint {.
+proc unqlite_result_int64*(pCtx: ptr unqlite_context; iValue: int): int {.
     importc: "unqlite_result_int64", header: "../private/unqlite.h".}
-proc unqlite_result_bool*(pCtx: ptr unqlite_context; iBool: cint): cint {.
+proc unqlite_result_bool*(pCtx: ptr unqlite_context; iBool: int): int {.
     importc: "unqlite_result_bool", header: "../private/unqlite.h".}
-proc unqlite_result_double*(pCtx: ptr unqlite_context; Value: cdouble): cint {.
+proc unqlite_result_double*(pCtx: ptr unqlite_context; Value: cdouble): int {.
     importc: "unqlite_result_double", header: "../private/unqlite.h".}
-proc unqlite_result_null*(pCtx: ptr unqlite_context): cint {.
+proc unqlite_result_null*(pCtx: ptr unqlite_context): int {.
     importc: "unqlite_result_null", header: "../private/unqlite.h".}
-proc unqlite_result_string*(pCtx: ptr unqlite_context; zString: cstring; nLen: cint): cint {.
+proc unqlite_result_string*(pCtx: ptr unqlite_context; zString: string; nLen: int): int {.
     importc: "unqlite_result_string", header: "../private/unqlite.h".}
-proc unqlite_result_string_format*(pCtx: ptr unqlite_context; zFormat: cstring): cint {.
+proc unqlite_result_string_format*(pCtx: ptr unqlite_context; zFormat: string): int {.
     varargs, importc: "unqlite_result_string_format", header: "../private/unqlite.h".}
-proc unqlite_result_value*(pCtx: ptr unqlite_context; pValue: ptr unqlite_value): cint {.
+proc unqlite_result_value*(pCtx: ptr unqlite_context; pValue: ptr unqlite_value): int {.
     importc: "unqlite_result_value", header: "../private/unqlite.h".}
-proc unqlite_result_resource*(pCtx: ptr unqlite_context; pUserData: pointer): cint {.
+proc unqlite_result_resource*(pCtx: ptr unqlite_context; pUserData: pointer): int {.
     importc: "unqlite_result_resource", header: "../private/unqlite.h".}
 ## # Dynamically Typed Value Object Query Interfaces
 
-proc unqlite_value_is_int*(pVal: ptr unqlite_value): cint {.
+proc unqlite_value_is_int*(pVal: ptr unqlite_value): int {.
     importc: "unqlite_value_is_int", header: "../private/unqlite.h".}
-proc unqlite_value_is_float*(pVal: ptr unqlite_value): cint {.
+proc unqlite_value_is_float*(pVal: ptr unqlite_value): int {.
     importc: "unqlite_value_is_float", header: "../private/unqlite.h".}
-proc unqlite_value_is_bool*(pVal: ptr unqlite_value): cint {.
+proc unqlite_value_is_bool*(pVal: ptr unqlite_value): int {.
     importc: "unqlite_value_is_bool", header: "../private/unqlite.h".}
-proc unqlite_value_is_string*(pVal: ptr unqlite_value): cint {.
+proc unqlite_value_is_string*(pVal: ptr unqlite_value): int {.
     importc: "unqlite_value_is_string", header: "../private/unqlite.h".}
-proc unqlite_value_is_null*(pVal: ptr unqlite_value): cint {.
+proc unqlite_value_is_null*(pVal: ptr unqlite_value): int {.
     importc: "unqlite_value_is_null", header: "../private/unqlite.h".}
-proc unqlite_value_is_numeric*(pVal: ptr unqlite_value): cint {.
+proc unqlite_value_is_numeric*(pVal: ptr unqlite_value): int {.
     importc: "unqlite_value_is_numeric", header: "../private/unqlite.h".}
-proc unqlite_value_is_callable*(pVal: ptr unqlite_value): cint {.
+proc unqlite_value_is_callable*(pVal: ptr unqlite_value): int {.
     importc: "unqlite_value_is_callable", header: "../private/unqlite.h".}
-proc unqlite_value_is_scalar*(pVal: ptr unqlite_value): cint {.
+proc unqlite_value_is_scalar*(pVal: ptr unqlite_value): int {.
     importc: "unqlite_value_is_scalar", header: "../private/unqlite.h".}
-proc unqlite_value_is_json_array*(pVal: ptr unqlite_value): cint {.
+proc unqlite_value_is_json_array*(pVal: ptr unqlite_value): int {.
     importc: "unqlite_value_is_json_array", header: "../private/unqlite.h".}
-proc unqlite_value_is_json_object*(pVal: ptr unqlite_value): cint {.
+proc unqlite_value_is_json_object*(pVal: ptr unqlite_value): int {.
     importc: "unqlite_value_is_json_object", header: "../private/unqlite.h".}
-proc unqlite_value_is_resource*(pVal: ptr unqlite_value): cint {.
+proc unqlite_value_is_resource*(pVal: ptr unqlite_value): int {.
     importc: "unqlite_value_is_resource", header: "../private/unqlite.h".}
-proc unqlite_value_is_empty*(pVal: ptr unqlite_value): cint {.
+proc unqlite_value_is_empty*(pVal: ptr unqlite_value): int {.
     importc: "unqlite_value_is_empty", header: "../private/unqlite.h".}
 ## # JSON Array/Object Management Interfaces
 
-proc unqlite_array_fetch*(pArray: ptr unqlite_value; zKey: cstring; nByte: cint): ptr unqlite_value {.
+proc unqlite_array_fetch*(pArray: ptr unqlite_value; zKey: string; nByte: int): ptr unqlite_value {.
     importc: "unqlite_array_fetch", header: "../private/unqlite.h".}
 proc unqlite_array_walk*(pArray: ptr unqlite_value; xWalk: proc (
-    a2: ptr unqlite_value; a3: ptr unqlite_value; a4: pointer): cint; pUserData: pointer): cint {.
+    a2: ptr unqlite_value; a3: ptr unqlite_value; a4: pointer): int; pUserData: pointer): int {.
     importc: "unqlite_array_walk", header: "../private/unqlite.h".}
 proc unqlite_array_add_elem*(pArray: ptr unqlite_value; pKey: ptr unqlite_value;
-                            pValue: ptr unqlite_value): cint {.
+                            pValue: ptr unqlite_value): int {.
     importc: "unqlite_array_add_elem", header: "../private/unqlite.h".}
-proc unqlite_array_add_strkey_elem*(pArray: ptr unqlite_value; zKey: cstring;
-                                   pValue: ptr unqlite_value): cint {.
+proc unqlite_array_add_strkey_elem*(pArray: ptr unqlite_value; zKey: string;
+                                   pValue: ptr unqlite_value): int {.
     importc: "unqlite_array_add_strkey_elem", header: "../private/unqlite.h".}
-proc unqlite_array_count*(pArray: ptr unqlite_value): cint {.
+proc unqlite_array_count*(pArray: ptr unqlite_value): int {.
     importc: "unqlite_array_count", header: "../private/unqlite.h".}
 ## # Call Context Handling Interfaces
 
-proc unqlite_context_output*(pCtx: ptr unqlite_context; zString: cstring; nLen: cint): cint {.
+proc unqlite_context_output*(pCtx: ptr unqlite_context; zString: string; nLen: int): int {.
     importc: "unqlite_context_output", header: "../private/unqlite.h".}
-proc unqlite_context_output_format*(pCtx: ptr unqlite_context; zFormat: cstring): cint {.
+proc unqlite_context_output_format*(pCtx: ptr unqlite_context; zFormat: string): int {.
     varargs, importc: "unqlite_context_output_format", header: "../private/unqlite.h".}
-proc unqlite_context_throw_error*(pCtx: ptr unqlite_context; iErr: cint; zErr: cstring): cint {.
+proc unqlite_context_throw_error*(pCtx: ptr unqlite_context; iErr: int; zErr: string): int {.
     importc: "unqlite_context_throw_error", header: "../private/unqlite.h".}
-proc unqlite_context_throw_error_format*(pCtx: ptr unqlite_context; iErr: cint;
-                                        zFormat: cstring): cint {.varargs,
+proc unqlite_context_throw_error_format*(pCtx: ptr unqlite_context; iErr: int;
+                                        zFormat: string): int {.varargs,
     importc: "unqlite_context_throw_error_format", header: "../private/unqlite.h".}
-proc unqlite_context_random_num*(pCtx: ptr unqlite_context): cuint {.
+proc unqlite_context_random_num*(pCtx: ptr unqlite_context): uint {.
     importc: "unqlite_context_random_num", header: "../private/unqlite.h".}
-proc unqlite_context_random_string*(pCtx: ptr unqlite_context; zBuf: cstring;
-                                   nBuflen: cint): cint {.
+proc unqlite_context_random_string*(pCtx: ptr unqlite_context; zBuf: string;
+                                   nBuflen: int): int {.
     importc: "unqlite_context_random_string", header: "../private/unqlite.h".}
 proc unqlite_context_user_data*(pCtx: ptr unqlite_context): pointer {.
     importc: "unqlite_context_user_data", header: "../private/unqlite.h".}
-proc unqlite_context_push_aux_data*(pCtx: ptr unqlite_context; pUserData: pointer): cint {.
+proc unqlite_context_push_aux_data*(pCtx: ptr unqlite_context; pUserData: pointer): int {.
     importc: "unqlite_context_push_aux_data", header: "../private/unqlite.h".}
 proc unqlite_context_peek_aux_data*(pCtx: ptr unqlite_context): pointer {.
     importc: "unqlite_context_peek_aux_data", header: "../private/unqlite.h".}
-proc unqlite_context_result_buf_length*(pCtx: ptr unqlite_context): cuint {.
+proc unqlite_context_result_buf_length*(pCtx: ptr unqlite_context): uint {.
     importc: "unqlite_context_result_buf_length", header: "../private/unqlite.h".}
-proc unqlite_function_name*(pCtx: ptr unqlite_context): cstring {.
+proc unqlite_function_name*(pCtx: ptr unqlite_context): string {.
     importc: "unqlite_function_name", header: "../private/unqlite.h".}
 ## # Call Context Memory Management Interfaces
 
-proc unqlite_context_alloc_chunk*(pCtx: ptr unqlite_context; nByte: cuint;
-                                 ZeroChunk: cint; AutoRelease: cint): pointer {.
+proc unqlite_context_alloc_chunk*(pCtx: ptr unqlite_context; nByte: uint;
+                                 ZeroChunk: int; AutoRelease: int): pointer {.
     importc: "unqlite_context_alloc_chunk", header: "../private/unqlite.h".}
 proc unqlite_context_realloc_chunk*(pCtx: ptr unqlite_context; pChunk: pointer;
-                                   nByte: cuint): pointer {.
+                                   nByte: uint): pointer {.
     importc: "unqlite_context_realloc_chunk", header: "../private/unqlite.h".}
 proc unqlite_context_free_chunk*(pCtx: ptr unqlite_context; pChunk: pointer) {.
     importc: "unqlite_context_free_chunk", header: "../private/unqlite.h".}
 ## # Global Library Management Interfaces
 
-proc unqlite_lib_config*(nConfigOp: cint): cint {.varargs,
+proc unqlite_lib_config*(nConfigOp: int): int {.varargs,
     importc: "unqlite_lib_config", header: "../private/unqlite.h".}
-proc unqlite_lib_init*(): cint {.importc: "unqlite_lib_init", header: "../private/unqlite.h".}
-proc unqlite_lib_shutdown*(): cint {.importc: "unqlite_lib_shutdown",
+proc unqlite_lib_init*(): int {.importc: "unqlite_lib_init", header: "../private/unqlite.h".}
+proc unqlite_lib_shutdown*(): int {.importc: "unqlite_lib_shutdown",
                                   header: "../private/unqlite.h".}
-proc unqlite_lib_is_threadsafe*(): cint {.importc: "unqlite_lib_is_threadsafe",
+proc unqlite_lib_is_threadsafe*(): int {.importc: "unqlite_lib_is_threadsafe",
                                        header: "../private/unqlite.h".}
-proc unqlite_lib_version*(): cstring {.importc: "unqlite_lib_version",
+proc unqlite_lib_version*(): string {.importc: "unqlite_lib_version",
                                     header: "../private/unqlite.h".}
-proc unqlite_lib_signature*(): cstring {.importc: "unqlite_lib_signature",
+proc unqlite_lib_signature*(): string {.importc: "unqlite_lib_signature",
                                       header: "../private/unqlite.h".}
-proc unqlite_lib_ident*(): cstring {.importc: "unqlite_lib_ident",
+proc unqlite_lib_ident*(): string {.importc: "unqlite_lib_ident",
                                   header: "../private/unqlite.h".}
-proc unqlite_lib_copyright*(): cstring {.importc: "unqlite_lib_copyright",
+proc unqlite_lib_copyright*(): string {.importc: "unqlite_lib_copyright",
                                       header: "../private/unqlite.h".}
 
 
 
 type
   UnQLite* = object
-    db: ptr ptr unqlite
+    db: ptr unqlite
     isMemory: bool
     isOpen: bool
     filename: string
-    flags: int
+    flags: uint
 
-proc open*(self: UnQLite)
-proc close*(self: UnQLite)
+proc open*(self: var UnQLite)
+proc close*(self: var UnQLite)
 
 proc newUnQLite*(filename = ":mem:", flags = UNQLITE_OPEN_CREATE, openDatabase = false): UnQLite =
   result.filename = filename
-  result.flags = flags
+  result.flags = flags.uint
   result.isMemory = filename == ":mem:"
   if openDatabase:
     result.open()
@@ -616,52 +616,51 @@ proc error(ret: int) =
 proc checkCall(ret: int) =
   discard
 
-proc open*(self: UnQLite) =
+proc open(self: var UnQLite) =
   if self.isOpen:
     self.close()
 
-  checkCall(unqlite_open(self.db, self.filename, self.flags))
+  checkCall(unqlite_open(addr self.db, self.filename, self.flags))
 
   self.isOpen = true
 
-proc close*(self: UnQLite) =
-  is self.isOPen:
+proc close*(self: var UnQLite) =
+  if self.isOPen:
     checkCall(unqlite_close(self.db))
-   self.isOpen = false
-   self.db = nil
+    self.isOpen = false
+    self.db = nil
 
 proc disableAutoCommit*(self: UnQLite) =
    if not self.isMemory:
-     let ret = unqlite_config(self.db, UNQLITE_CONFIG_DISABKE_AUTO_COMMIT)
+     let ret = unqlite_config(self.db, UNQLITE_CONFIG_DISABLE_AUTO_COMMIT)
      if ret != UNQLITE_OK:
        raise newException(LibraryError, "'Error disabling autocommit for in-memory database")
 
-
-proc store*(self: UnQLite, key: value: string):
-  checkCall(unqlite_kv_store(self.db, key, -1, value, value.len)
+proc store*(self: UnQLite, key, value: string) =
+  checkCall(unqlite_kv_store(self.db, key, -1, value, value.len))
 
 proc fetch*(self: UnQLite, key: string): auto =
   var
     buf: string
-    bufSize = ptr int;
-  checkCall(unqlite_kv_fetch(self.db, key, -1, 0, buf, bufSize)
+    bufSize: int
+  checkCall(unqlite_kv_fetch(self.db, key, -1, buf, addr bufSize))
 
-  return buf[:bufSize]
+  return buf[0..<bufSize]
 
-proc delete*(self: UnLQite, key: string):
-  checkCall(unqlite_kv_delet(self.db, key, -1))
+proc delete*(self: UnQLite, key: string) =
+  checkCall(unqlite_kv_delete(self.db, key, -1))
 
-proc append*(self: UnQLite, key, value: string):
+proc append*(self: UnQLite, key, value: string) =
   checkCall(unqlite_kv_append(self.db, key, -1, value, value.len))
 
-proc exists*(self: UnQLite, key: string): bool
+proc exists*(self: UnQLite, key: string): bool =
   var
     buf: string
     bufSize: ptr int
   let ret = unqlite_kv_fetch(self.db, key, -1, buf, bufSize)
   if ret == UNQLITE_OK:
     return true
-  if ret == UNQLITE_NOT_FOUND;
+  if ret == UNQLITE_NOT_FOUND:
     return false
 
   error(ret)
