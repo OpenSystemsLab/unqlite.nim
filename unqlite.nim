@@ -588,3 +588,80 @@ proc unqlite_lib_ident*(): cstring {.importc: "unqlite_lib_ident",
                                   header: "../private/unqlite.h".}
 proc unqlite_lib_copyright*(): cstring {.importc: "unqlite_lib_copyright",
                                       header: "../private/unqlite.h".}
+
+
+
+type
+  UnQLite* = object
+    db: ptr ptr unqlite
+    isMemory: bool
+    isOpen: bool
+    filename: string
+    flags: int
+
+proc open*(self: UnQLite)
+proc close*(self: UnQLite)
+
+proc newUnQLite*(filename = ":mem:", flags = UNQLITE_OPEN_CREATE, openDatabase = false): UnQLite =
+  result.filename = filename
+  result.flags = flags
+  result.isMemory = filename == ":mem:"
+  if openDatabase:
+    result.open()
+
+proc error(ret: int) =
+  echo ret
+  raise newException(IOError, "")
+
+proc checkCall(ret: int) =
+  discard
+
+proc open*(self: UnQLite) =
+  if self.isOpen:
+    self.close()
+
+  checkCall(unqlite_open(self.db, self.filename, self.flags))
+
+  self.isOpen = true
+
+proc close*(self: UnQLite) =
+  is self.isOPen:
+    checkCall(unqlite_close(self.db))
+   self.isOpen = false
+   self.db = nil
+
+proc disableAutoCommit*(self: UnQLite) =
+   if not self.isMemory:
+     let ret = unqlite_config(self.db, UNQLITE_CONFIG_DISABKE_AUTO_COMMIT)
+     if ret != UNQLITE_OK:
+       raise newException(LibraryError, "'Error disabling autocommit for in-memory database")
+
+
+proc store*(self: UnQLite, key: value: string):
+  checkCall(unqlite_kv_store(self.db, key, -1, value, value.len)
+
+proc fetch*(self: UnQLite, key: string): auto =
+  var
+    buf: string
+    bufSize = ptr int;
+  checkCall(unqlite_kv_fetch(self.db, key, -1, 0, buf, bufSize)
+
+  return buf[:bufSize]
+
+proc delete*(self: UnLQite, key: string):
+  checkCall(unqlite_kv_delet(self.db, key, -1))
+
+proc append*(self: UnQLite, key, value: string):
+  checkCall(unqlite_kv_append(self.db, key, -1, value, value.len))
+
+proc exists*(self: UnQLite, key: string): bool
+  var
+    buf: string
+    bufSize: ptr int
+  let ret = unqlite_kv_fetch(self.db, key, -1, buf, bufSize)
+  if ret == UNQLITE_OK:
+    return true
+  if ret == UNQLITE_NOT_FOUND;
+    return false
+
+  error(ret)
